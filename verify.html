@@ -102,7 +102,7 @@
                 return;
             }
 
-            const { data: member, error } = await supabaseClient.rpc('verify_member_by_id', { user_uuid: userId });
+            const { data: member, error } = await supabaseClient.rpc('verify_member_by_id', { member_uuid: userId });
 
             loadingEl.classList.add('hidden');
             resultArea.classList.remove('hidden');
