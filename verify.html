@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vérification d'adhésion - BIGG BDE</title>
+    <link rel="icon" type="image/png" href="https://biggbde.fr/assets/favicons/favicon-32x32.png" sizes="32x32">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .verify-container {
+            max-width: 500px;
+            margin: 5rem auto;
+            padding: 2rem;
+            text-align: center;
+        }
+        .status-box {
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .status-valid {
+            background: rgba(40, 167, 69, 0.1);
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+        .status-invalid {
+            background: rgba(220, 53, 69, 0.1);
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+        .status-icon {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .member-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        .btn-pdf {
+            display: inline-block;
+            background-color: var(--dark);
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 1.5rem;
+            transition: var(--transition);
+        }
+        .btn-pdf:hover {
+            background-color: var(--primary);
+        }
+    </style>
+</head>
+<body style="background-color: var(--light);">
+    <header style="justify-content: center;">
+        <a href="https://biggbde.fr/" class="brand">
+            <img src="https://biggbde.fr/assets/favicons/web-app-manifest-512x512.png" alt="Logo BIGG BDE">
+            <h1>BIGG BDE</h1>
+        </a>
+    </header>
+
+    <main class="verify-container">
+        <div class="card" style="padding: 2rem;">
+            <h2 style="border: none; margin-bottom: 2rem;">Vérification</h2>
+            
+            <div id="loading" style="color: var(--gray);">
+                Vérification de l'adhésion en cours...
+            </div>
+
+            <div id="result-area" class="hidden">
+                <!-- Le contenu sera injecté par le JS -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const SUPABASE_URL = 'https://VOTRE_PROJET.supabase.co';
+        const SUPABASE_ANON_KEY = 'VOTRE_CLE_ANON';
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function verifyMember() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('id');
+            const loadingEl = document.getElementById('loading');
+            const resultArea = document.getElementById('result-area');
+
+            if (!userId) {
+                loadingEl.classList.add('hidden');
+                resultArea.classList.remove('hidden');
+                resultArea.innerHTML = `
+                    <div class="status-box status-invalid">
+                        <div class="status-icon">✕</div>
+                        <h2>QR Code invalide</h2>
+                        <p>Aucun identifiant trouvé.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const { data: member, error } = await supabaseClient.rpc('verify_member_by_id', { user_uuid: userId });
+
+            loadingEl.classList.add('hidden');
+            resultArea.classList.remove('hidden');
+
+            if (error || !member) {
+                resultArea.innerHTML = `
+                    <div class="status-box status-invalid">
+                        <div class="status-icon">✕</div>
+                        <h2>Adhésion introuvable</h2>
+                        <p>Cet utilisateur n'est pas enregistré dans la base de données du BDE.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Si on a trouvé le membre, on affiche la carte
+            const pdfLink = member.pdf_url ? `<a href="${member.pdf_url}" target="_blank" class="btn-pdf">Ouvrir la carte PDF</a>` : '<p style="margin-top:1rem; color:var(--gray); font-size:0.9rem;">Aucune carte PDF disponible.</p>';
+
+            resultArea.innerHTML = `
+                <div class="status-box status-valid">
+                    <div class="status-icon">✓</div>
+                    <h2>Adhésion Valide</h2>
+                    <p>Membre certifié du BIGG BDE</p>
+                </div>
+                
+                <div class="member-info">
+                    <h3>${member.first_name} ${member.last_name}</h3>
+                    <p style="color: var(--primary); font-weight: bold; font-size: 1.2rem;">${member.filiere} - ${member.annee}</p>
+                    ${pdfLink}
+                </div>
+            `;
+        }
+
+        verifyMember();
+    </script>
+</body>
+</html>
