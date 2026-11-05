@@ -104,7 +104,7 @@ async function onAuthenticated() {
     }
 
     qrcodeContainer.innerHTML = '';
-    const qrUrl = `https://adh.biggbde.fr/verify.html?id=${currentUser.id}`;
+    const qrUrl = `https://adh.biggbde.fr/verify.html?id=${member.id}`;
     
     new QRCode(qrcodeContainer, {
         text: qrUrl,
