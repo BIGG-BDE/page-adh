@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIGG BDE - Espace Membre</title>
+    <link rel="icon" type="image/png" href="https://biggbde.fr/assets/favicons/favicon-256x256.png" sizes="256x256">
+    <link rel="icon" type="image/x-icon" href="https://biggbde.fr/favicon.ico">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <header>
+        <a href="https://biggbde.fr/" class="brand">
+            <img src="https://biggbde.fr/assets/favicons/web-app-manifest-512x512.png" alt="Logo BIGG BDE">
+            <h1>BIGG BDE</h1>
+        </a>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Ouvrir le menu">☰</button>
+        <nav id="main-nav">
+            <a href="https://biggbde.fr/">Accueil du site</a>
+            <a href="#" class="active">Espace Membre</a>
+            <div id="nav-auth" class="nav-auth hidden">
+                <span id="user-email" class="user-email"></span>
+                <button id="logout-btn" class="btn nav-contact-btn">Déconnexion</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="home-page">
+        <section id="auth-section" class="app-section">
+            <div class="card auth-card">
+                <div class="card-content">
+                    <h2>Espace Membre</h2>
+                    <p class="subtitle">Connecte-toi pour accéder à ton profil et aux votes.</p>
+                    <form id="auth-form">
+                        <div class="input-group">
+                            <label for="email">Adresse email</label>
+                            <input type="email" id="email" required placeholder="adresse@email.com">
+                        </div>
+                        <div class="input-group">
+                            <label for="password">Mot de passe</label>
+                            <input type="password" id="password" required placeholder="••••••••">
+                        </div>
+                        <div class="auth-actions">
+                            <button type="submit" id="login-btn" class="btn">Connexion</button>
+                            <button type="button" id="signup-btn" class="btn btn-outline">Inscription</button>
+                        </div>
+                    </form>
+                    <p id="auth-message" class="message"></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="profile-section" class="app-section hidden">
+            <div class="card profile-card" style="border-top: 5px solid var(--primary);">
+                <div class="card-content text-center">
+                    <h2 style="font-size: 1.5rem; border: none; margin-bottom: 0;">Carte de Membre</h2>
+                    <p style="color: var(--gray); margin-bottom: 1.5rem;">BIGG BDE 2026-2027</p>
+                    
+                    <p id="member-name" class="member-name" style="font-size: 1.5rem; margin-bottom: 0.2rem;"></p>
+                    <!-- Les détails (filière/année) seront injectés ici par le JS -->
+                    
+                    <div class="qr-wrapper" style="margin-top: 1.5rem;">
+                        <div id="qrcode-container"></div>
+                    </div>
+                    <p class="qr-hint">Présente ce QR code aux organisateurs du BDE lors des événements pour valider ta cotisation.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="vote-section" class="app-section hidden">
+            <div class="card vote-card">
+                <div class="card-content">
+                    <h2>Vote en cours</h2>
+                    <p id="poll-question" class="poll-question">Chargement...</p>
+                    <div id="poll-options" class="poll-options"></div>
+                    <p id="vote-message" class="message"></p>
+                    
+                    <div id="results-container" class="results-container hidden">
+                        <h3>Résultats en direct</h3>
+                        <div id="results-list" class="results-list"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="https://biggbde.fr/mentions-legales/">Mentions Légales</a>
+            <a href="https://biggbde.fr/faq/">FAQ</a>
+        </div>
+        <div class="footer-socials">
+            <span><a href="https://www.instagram.com/bigg_bde" target="_blank">Instagram</a></span>
+            <span><a href="https://www.facebook.com/profile.php?id=61569855328651" target="_blank">Facebook</a></span>
+            <span><a href="https://www.tiktok.com/@biggbde" target="_blank">Tiktok</a></span>
+        </div>
+        <p>&copy; 2026 BIGG BDE - Tous droits réservés</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
